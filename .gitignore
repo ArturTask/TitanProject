@@ -1,0 +1,25 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+fronttitan/node_modules
+
+fronttitan/.pnp
+fronttitan/.pnp.js
+
+# testing
+fronttitan/coverage
+
+# production
+fronttitan/build
+
+# misc
+*.DS_Store
+fronttitan/.env.local
+fronttitan/.env.development.local
+fronttitan/.env.test.local
+fronttitan/.env.production.local
+
+fronttitan/npm-debug.log*
+fronttitan/yarn-debug.log*
+fronttitan/yarn-error.log*
+*.DS_Store
