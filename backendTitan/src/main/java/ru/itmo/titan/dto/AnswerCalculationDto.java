@@ -22,7 +22,7 @@ public class AnswerCalculationDto {
 //не выданных, в связи с медленным расчетом функции 1)>
 
     public AnswerCalculationDto(JsFunctionResult result1, JsFunctionResult result2, long ahead1, long ahead2){
-        this.answer = "<" + result1.getIterNumber() + ">," + "<" + result1.getResult() + ">," + "<" + result1.getCalcTime() + ">," + "<" + ahead2 + ">,      "
+        this.answer = "<" + result1.getIterNumber() + ">," + "<" + result1.getResult() + ">," + "<" + result1.getCalcTime() + ">," + "<" + ahead1 + ">,      "
                 + "<" + result2.getIterNumber() + ">," + "<" + result2.getResult() + ">," + "<" + result2.getCalcTime() + ">," + "<" + ahead2 + ">";
         this.msg = result1.getMsg() + "     " + result2.getMsg();
 
