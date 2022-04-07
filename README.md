@@ -1,5 +1,7 @@
 # TitanProject
 My project for Titan
+backTitan - is the actuall application
+fronttitan is just a simple react app (client) to show the work of backTitan
 ## Задача - реализовать реактивный RESTful Web Service “Калькулятор” с использованием Spring WebFlux.
 
 ### При вызове сервиса клиент должен передать ему четыре параметра:

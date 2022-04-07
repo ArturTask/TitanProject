@@ -13,6 +13,8 @@
     z-index: 0;
     
  }
+
+ 
     
   .central {
     background: #fff;
@@ -26,12 +28,14 @@
     max-width: 700px;
     min-height: 500px;
     margin: 80px auto;
+    padding: 10px;
   }
 
-  .central *{
+  .central:nth-child(1){
     display: block;
     margin: 10px auto;
   }
+  
 
   .central form *{
     display: block;
@@ -129,4 +133,19 @@
   border-bottom: 2px solid #2beef5e0;
   /* border-bottom: 2px solid #1d863491; */
   
+}
+
+.central table tbody tr td{
+  padding: 10px;
+  background-color: #67e382;
+}
+
+.central table{
+  margin: auto;
+
+}
+
+.central form textarea:nth-child(1) {
+  margin-top: 20px;
+  /* background-color: #294d31; */
 }

@@ -14,4 +14,6 @@ public class JsFunctionResult {
     private Long calcTime;
 
     private String msg;
+
+    private Long iterNumber;
 }
