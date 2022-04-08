@@ -15,6 +15,7 @@ class App extends React.Component {
     };
     this.func = this.func.bind(this);
     this.go = this.go.bind(this);
+    this.go2 = this.go2.bind(this);
   }
 
   func(e){
@@ -45,63 +46,42 @@ class App extends React.Component {
   }
   else{
     let i =0;
-    let maxQuantity = $("#quantity").val();
-    if(!isNaN(parseInt(maxQuantity))){
-      while(i<maxQuantity){
-        alert("in while")
-        i++;
-        axios.post("http://localhost:8080/calculator/calculate",{func1:this.state.func1,func2:this.state.func2,quantity:1,mode:mode}).then(
-          (response)=>{
-            // alert(response.data);
-            // if(response.data.length==1){
-              // alert(response.data[0].msg);
-            //   this.setState({info:[]})
-            // }
-            // else{
-              // alert(response.data);
-              let currInfo = this.state.info;
-              currInfo.push(response.data[0]);
-              if(response.data.length>1){
-                currInfo.push(response.data[1]);
-                
-              }
-
-              this.setState({info:currInfo})
-            // }
-          }
-        )
-      }
-    }
-    
-   
-  }
-
-  }
-
-  postResult(i,maxQuantity){
-    let mode = true;
-
-    $(".mode").each((i,el)=>{
-      if($(el).prop("checked")){
-          // alert($(el).val())
-          mode = $(el).val();
-      }
-    }
-    );
-    
-    if(i<maxQuantity){
-      alert("post heereeee")
-      axios.post("http://localhost:8080/calculator/calculate",{func1:this.state.func1,func2:this.state.func2,quantity:1,mode:mode}).then(
+    let quantity = $("#quantity").val();
+    if(!isNaN(parseInt(quantity))){
+          axios.post("http://localhost:8080/calculator/calculate",{func1:this.state.func1,func2:this.state.func2,quantity:quantity,mode:mode}).then(
             (response)=>{
-                let currInfo = this.state.info;
-                currInfo.push(response.data[0]);
-                currInfo.push(response.data[1]);
-                this.setState({info:currInfo});
-                i++;
-                this.postResult(i,maxQuantity);
+                console.log(response.data);
+                this.setState({info:response.data})
+              // }
             }
           )
       }
+      else{
+        alert("unparsable quantity");
+      }
+    
+  
+    } 
+
+  }
+
+
+  go2(e){
+    e.preventDefault();
+    // var url = URL('http://localhost:8080/calculator/3');
+    // var url = new URL("https://a.com/method"),
+    fetch("http://localhost:8080/calculator/3",)
+    .then(res => {
+      const reader = res.body.getReader();
+      return reader.read().then((done,value) => {
+        if(done){
+          return null;
+        }
+        console.log(value);
+      });
+    })
+    // .then(data => console.log(data));
+    
   }
 
   render(){

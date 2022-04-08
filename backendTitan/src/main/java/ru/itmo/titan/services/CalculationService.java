@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CalculationService {
 
     public CalculationService() {
-        interval = Duration.ofNanos(1l);
+        interval = Duration.ofSeconds(1l);
     }
 
     private static Duration interval;
@@ -26,6 +26,7 @@ public class CalculationService {
         String checkMsg = checkCalculationDto(calculationDto);
         if(checkMsg.equals("Success")){//valid
             Long quantity = Long.parseLong(calculationDto.getQuantity());
+
             if(!calculationDto.getMode()) { //ordered = false
                 Flux<AnswerCalculationDto> firstFunc = Flux.interval(interval)//func 1
                         .onBackpressureDrop()
@@ -37,7 +38,7 @@ public class CalculationService {
                         .map((i) -> new AnswerCalculationDto(i, 2, translateToJava(calculationDto.getFunc2(), i)));
                 return Flux.merge(firstFunc, secondFunc);
             }
-            else {
+            else { //ordered = true
                 AtomicInteger func1Total = new AtomicInteger();
                 AtomicInteger func2Total = new AtomicInteger();
                 Flux<JsFunctionResult> firstCode = Flux.interval(interval)
