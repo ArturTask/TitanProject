@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 public class AnswerCalculationDto {
 
 // non ordered    <№ итерации>, <номер функции>, <результат функции>, <время расчета функции>
+
+    // mode (ordered) = false
     public AnswerCalculationDto(long iter, int numberOfFunc, JsFunctionResult jsFunctionResult){
         this.answer = "<"+ iter + ">," + "<"+ numberOfFunc + ">," + "<"+ jsFunctionResult.getResult() + ">," + "<"+ jsFunctionResult.getCalcTime() + ">";
         this.msg = jsFunctionResult.getMsg();
@@ -21,7 +23,14 @@ public class AnswerCalculationDto {
 //функции 2>, <время расчета функции 2>, <кол-во полученных наперед результатов функции 2 (еще
 //не выданных, в связи с медленным расчетом функции 1)>
 
+    // mode (ordered) = true
     public AnswerCalculationDto(JsFunctionResult result1, JsFunctionResult result2, long ahead1, long ahead2){
+        if(ahead1<0){
+            ahead1=0;
+        }
+        if(ahead2<0){
+            ahead2=0;
+        }
         this.answer = "<" + result1.getIterNumber() + ">," + "<" + result1.getResult() + ">," + "<" + result1.getCalcTime() + ">," + "<" + ahead1 + ">,      "
                 + "<" + result2.getIterNumber() + ">," + "<" + result2.getResult() + ">," + "<" + result2.getCalcTime() + ">," + "<" + ahead2 + ">";
         this.msg = result1.getMsg() + "     " + result2.getMsg();

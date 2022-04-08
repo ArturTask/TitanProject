@@ -1,6 +1,7 @@
 package ru.itmo.titan.services;
 
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.BufferOverflowStrategy;
 import reactor.core.publisher.Flux;
 import ru.itmo.titan.dto.AnswerCalculationDto;
 import ru.itmo.titan.dto.CalculationDto;
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CalculationService {
 
     public CalculationService() {
-        interval = Duration.ofSeconds(1l);
+        interval = Duration.ofNanos(1l);
     }
 
     private static Duration interval;
@@ -29,11 +30,15 @@ public class CalculationService {
 
             if(!calculationDto.getMode()) { //ordered = false
                 Flux<AnswerCalculationDto> firstFunc = Flux.interval(interval)//func 1
-                        .onBackpressureDrop()
+                        .limitRate(20)
+                        .onBackpressureBuffer()
+//                        .onBackpressureDrop()
                         .takeWhile((i) -> i < quantity)
                         .map((i) -> new AnswerCalculationDto(i, 1, translateToJava(calculationDto.getFunc1(), i)));
                 Flux<AnswerCalculationDto> secondFunc = Flux.interval(interval) //func 2
-                        .onBackpressureDrop()
+                        .limitRate(20)
+                        .onBackpressureBuffer()
+//                        .onBackpressureDrop()
                         .takeWhile((i) -> i < quantity)
                         .map((i) -> new AnswerCalculationDto(i, 2, translateToJava(calculationDto.getFunc2(), i)));
                 return Flux.merge(firstFunc, secondFunc);
@@ -42,16 +47,24 @@ public class CalculationService {
                 AtomicInteger func1Total = new AtomicInteger();
                 AtomicInteger func2Total = new AtomicInteger();
                 Flux<JsFunctionResult> firstCode = Flux.interval(interval)
-                        .onBackpressureDrop()
+                        .limitRate(20)
+                        .onBackpressureBuffer()
+//                        .onBackpressureDrop()
                         .takeWhile((i) -> i < quantity)
                         .doOnNext((i) -> func1Total.getAndIncrement())
                         .map((i) -> translateToJava(calculationDto.getFunc1(), i));
                 Flux<JsFunctionResult> secondCode = Flux.interval(interval)
-                        .onBackpressureDrop()
+                        .limitRate(20)
+                        .onBackpressureBuffer()
+//                        .onBackpressureDrop()
                         .takeWhile((i) -> i < quantity)
-                        .doOnNext((i) -> func1Total.getAndIncrement())
+                        .doOnNext((i) -> func2Total.getAndIncrement())
                         .map((i) -> translateToJava(calculationDto.getFunc2(), i));
-                return firstCode.zipWith(secondCode, ((jsFunctionResult, jsFunctionResult2) -> new AnswerCalculationDto(jsFunctionResult,jsFunctionResult2,func1Total.get()-jsFunctionResult.getIterNumber()-1, func2Total.get()-jsFunctionResult2.getIterNumber()-1)));
+                return firstCode.zipWith(secondCode, ((jsFunctionResult, jsFunctionResult2) -> {
+//                    System.out.println(func1Total.get() +" and "+ jsFunctionResult.getIterNumber());
+                    return new AnswerCalculationDto(jsFunctionResult, jsFunctionResult2, func1Total.get() - jsFunctionResult.getIterNumber() - 1, func2Total.get() - jsFunctionResult2.getIterNumber() - 1);
+
+                }));
             }
         }
         else {//invalid data from client
