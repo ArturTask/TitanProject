@@ -28,7 +28,7 @@ public class CalculatorController {
 
     @PostMapping(value = "/calculate")
     public Flux<AnswerCalculationDto> calculate(@RequestBody CalculationDto calculationDto) {
-        System.out.println("da");
+//        System.out.println("da");
         return calculationService.calculate(calculationDto);
     }
 

@@ -42,14 +42,16 @@ public class CalculationService {
                 AtomicInteger func1Total = new AtomicInteger();
                 AtomicInteger func2Total = new AtomicInteger();
                 Flux<JsFunctionResult> firstCode = Flux.interval(interval)
+                        .onBackpressureDrop()
                         .takeWhile((i) -> i < quantity)
                         .doOnNext((i) -> func1Total.getAndIncrement())
                         .map((i) -> translateToJava(calculationDto.getFunc1(), i));
                 Flux<JsFunctionResult> secondCode = Flux.interval(interval)
+                        .onBackpressureDrop()
                         .takeWhile((i) -> i < quantity)
                         .doOnNext((i) -> func1Total.getAndIncrement())
                         .map((i) -> translateToJava(calculationDto.getFunc2(), i));
-                return firstCode.zipWith(secondCode, ((jsFunctionResult, jsFunctionResult2) -> new AnswerCalculationDto(jsFunctionResult,jsFunctionResult2,func1Total.get()-jsFunctionResult2.getIterNumber()-1, func2Total.get())));
+                return firstCode.zipWith(secondCode, ((jsFunctionResult, jsFunctionResult2) -> new AnswerCalculationDto(jsFunctionResult,jsFunctionResult2,func1Total.get()-jsFunctionResult.getIterNumber()-1, func2Total.get()-jsFunctionResult2.getIterNumber()-1)));
             }
         }
         else {//invalid data from client
